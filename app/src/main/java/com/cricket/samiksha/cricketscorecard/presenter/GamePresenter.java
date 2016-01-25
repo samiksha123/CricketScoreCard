@@ -11,6 +11,7 @@ public class GamePresenter {
   private List<Integer> totalBalls = new ArrayList<>();
   private int wideBalls = 0;
   private int wicket = 0;
+  private boolean shouldOverComplete;
 
   private int noball = 0;
 
@@ -24,8 +25,10 @@ public class GamePresenter {
   }
 
   public void setRunsPerOver(String runEnterByUser) {
-    if(getPossibleRuns().contains(runEnterByUser))
+    if(getPossibleRuns().contains(runEnterByUser)){
       totalBalls.add(Integer.parseInt(runEnterByUser));
+      shouldOverComplete = true;
+    }
     if(runEnterByUser.equals("wide"))
       setWidesPerOver();
     if(runEnterByUser.equals("no ball"))
@@ -40,19 +43,22 @@ public class GamePresenter {
   }
 
   public boolean isOverComplete() {
-    return totalBalls.size() % 6 == 0;
+    return totalBalls.size() % 6 == 0 && shouldOverComplete;
   }
 
   public void setWidesPerOver(){
     wideBalls += 1;
+    shouldOverComplete = false;
   }
 
   public void setNoBallsPerOver(){
     noball += 1;
+    shouldOverComplete = false;
   }
 
   private void setWicket() {
     wicket += 1;
+    shouldOverComplete = false;
   }
 
 
