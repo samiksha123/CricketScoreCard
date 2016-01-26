@@ -3,20 +3,13 @@ package com.cricket.samiksha.cricketscorecard.presenter;
 
 import com.cricket.samiksha.cricketscorecard.model.Over;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class GamePresenter {
-  private List<Integer> totalBalls = new ArrayList<>();
-  private int wideBalls = 0;
-  private int wicket = 0;
-  private boolean shouldOverComplete;
+  private Over over = new Over();
 
-  private int noball = 0;
-
-
-  public List<String> getNumbers() {
+  public List<String> getPossibleInputs() {
     return Arrays.asList("1","2","4","6","wide","no ball","wicket");
   }
 
@@ -25,42 +18,33 @@ public class GamePresenter {
   }
 
   public void setRunsPerOver(String runEnterByUser) {
+    over.addLastAction(runEnterByUser);
     if(getPossibleRuns().contains(runEnterByUser)){
-      totalBalls.add(Integer.parseInt(runEnterByUser));
-      shouldOverComplete = true;
+      over.addRuns(Integer.parseInt(runEnterByUser));
     }
     if(runEnterByUser.equals("wide"))
-      setWidesPerOver();
+      over.addWideBall();
     if(runEnterByUser.equals("no ball"))
-      setNoBallsPerOver();
+      over.addNoBall();
     if(runEnterByUser.equals("wicket"))
-      setWicket();
+      over.addWicket();
   }
 
   public String getRuns(){
-    Over over = new Over(totalBalls, wideBalls, noball);
-    return String.valueOf(over.getTotalRuns());
+    return String.valueOf(over.getRunsPerOver());
   }
 
   public boolean isOverComplete() {
-    return totalBalls.size() % 6 == 0 && shouldOverComplete;
+    return over.isComplete();
   }
 
-  public void setWidesPerOver(){
-    wideBalls += 1;
-    shouldOverComplete = false;
-  }
-
-  public void setNoBallsPerOver(){
-    noball += 1;
-    shouldOverComplete = false;
-  }
-
-  private void setWicket() {
-    wicket += 1;
-    shouldOverComplete = false;
+  public String getWicket() {
+    return String.valueOf(over.getWicketsCount());
   }
 
 
+  public void undoLastAction() {
+    over.undoLastAction();
+  }
 
 }

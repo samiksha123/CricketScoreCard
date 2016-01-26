@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -19,11 +20,14 @@ public class GameActivity extends Activity {
 
   GamePresenter presenter = new GamePresenter();
   private int currentOverCounter = 0;
+  private TextView runs;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.game_layout);
+
+    runs = (TextView) findViewById(R.id.total_runs);
 
     Intent intent = getIntent();
     final String teamName = intent.getStringExtra("team_name");
@@ -40,22 +44,23 @@ public class GameActivity extends Activity {
   }
 
   @NonNull
-  private AdapterView.OnItemClickListener onInputClickListener(final String numOfOvers, final TextView overs) {
-    return new AdapterView.OnItemClickListener() {
+  private OnItemClickListener onInputClickListener(final String numOfOvers, final TextView overs) {
+    return new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String runEnterByUser = ((TextView) view).getText().toString();
         presenter.setRunsPerOver(runEnterByUser);
 
-        TextView runs = (TextView) findViewById(R.id.total_runs);
         runs.setText(presenter.getRuns());
 
         if (presenter.isOverComplete()) {
-          currentOverCounter += 1;
+          currentOverCounter++;
           showDialog();
         }
         overs.setText(currentOverCounter + "/" + numOfOvers);
 
+        TextView wicket = (TextView) findViewById(R.id.wicket);
+        wicket.setText(String.valueOf(presenter.getWicket()));
       }
     };
   }
@@ -64,7 +69,7 @@ public class GameActivity extends Activity {
   private GridView createInputTemplate() {
     GridView gridView = (GridView) findViewById(R.id.gridview1);
     ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-        android.R.layout.simple_list_item_1, presenter.getNumbers());
+        android.R.layout.simple_list_item_1, presenter.getPossibleInputs());
     gridView.setAdapter(adapter);
     return gridView;
   }
@@ -79,4 +84,8 @@ public class GameActivity extends Activity {
         }).show();
   }
 
+  public void undoLastAction(View view) {
+    presenter.undoLastAction();
+    runs.setText(presenter.getRuns());
+  }
 }

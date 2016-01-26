@@ -13,8 +13,8 @@ public class Game {
 
   public int getInningRuns(){
     for (int i = 0; i < numberOfOvers; i++) {
-      Overs overs = new Overs(i,new Over(Arrays.asList(1,2,0,0,2,0),0,0));
-      totalRuns += overs.getCurrentOver().getTotalRuns();
+      Overs overs = new Overs(i,new Over());
+      totalRuns += overs.getCurrentOver().getRunsPerOver();
     }
     return totalRuns;
 }

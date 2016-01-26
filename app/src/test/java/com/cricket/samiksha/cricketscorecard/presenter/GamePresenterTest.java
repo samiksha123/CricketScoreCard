@@ -11,9 +11,6 @@ public class GamePresenterTest {
 
   GamePresenter presenter = new GamePresenter();
 
-  @Test
-  public void getPossibleValuesForOver(){
-    List<String> possibleValues = Arrays.asList("1", "2", "4", "6", "wide", "no ball", "wicket");
-    assertEquals(possibleValues,presenter.getNumbers());
-  }
+
+
 }

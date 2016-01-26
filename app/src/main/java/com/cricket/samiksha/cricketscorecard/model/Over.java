@@ -1,41 +1,63 @@
 package com.cricket.samiksha.cricketscorecard.model;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Stack;
 
 public class Over {
-  List<Integer> totalBalls = new ArrayList<>();
-  int wideBall;
-  int noBall;
-  int runs;
 
-  public Over(List<Integer> totalBalls, int wideBall, int noBall) {
-    this.totalBalls = totalBalls;
-    this.wideBall = wideBall;
-    this.noBall = noBall;
+  Stack<Integer> totalBalls = new Stack<>();
+  int wideBall = 0;
+  int noBall = 0;
+  int wicketCount = 0;
+  String lastAction;
+
+  public void addRuns(int run) {
+    totalBalls.push(run);
   }
 
-  public void setTotalBalls(List<Integer> totalBalls) {
-    this.totalBalls = totalBalls;
+  public void addWideBall() {
+    this.wideBall++;
   }
 
-  public void setWideBall(int wideBall) {
-    this.wideBall = wideBall;
+  public void addNoBall() {
+    this.noBall++;
   }
 
-  public void setNoBall(int noBall) {
-    this.noBall = noBall;
-  }
-
-  public void setRun(int runs) {
-    this.runs = runs;
-  }
-
-  public int getTotalRuns() {
+  public int getRunsPerOver() {
+    int runs = 0;
     for (Integer ball : totalBalls) {
       runs += ball;
     }
     runs += wideBall + noBall;
     return runs;
   }
+
+  public boolean isComplete() {
+    return totalBalls.size() != 0 && totalBalls.size() % 6 == 0;
+  }
+
+  public void addWicket() {
+    wicketCount++;
+  }
+
+  public int getWicketsCount(){
+    return wicketCount;
+  }
+
+  public void addLastAction(String lastAction){
+    this.lastAction = lastAction;
+  }
+
+  public void undoLastAction() {
+    if (lastAction != null) {
+      if (lastAction.equals("wide"))
+        wideBall--;
+      if (lastAction.equals("no ball"))
+        noBall--;
+      if (totalBalls.contains(Integer.parseInt(lastAction)) && totalBalls.size() != 0) {
+        totalBalls.pop();
+      }
+    }
+  }
+
 }
